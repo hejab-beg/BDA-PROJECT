@@ -3,14 +3,19 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Audio Streaming Webpage</title>
+    <title>Similar Tracks</title>
 </head>
 <body>
-    <h1>Audio Streaming Webpage</h1>
-    <audio controls>
-        <source src="/audio_stream" type="audio/mpeg">
-        Your browser does not support the audio element.
-    </audio>
+    <h1>Similar Tracks</h1>
+    <ul>
+        {% for track in similar_tracks %}
+        <li>
+            <p><strong>Title:</strong> {{ track['metadata.title'] }}</p>
+            <p><strong>Artist:</strong> {{ track['metadata.artist'] }}</p>
+            <p><strong>Album:</strong> {{ track['metadata.album'] }}</p>
+            <p><strong>Genre:</strong> {{ track['metadata.genre'] }}</p>
+        </li>
+        {% endfor %}
+    </ul>
 </body>
 </html>
-
