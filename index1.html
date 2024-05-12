@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>MP3 Player</title>
+
+  <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+  <h1>Suggested Albums for You</h1>
+  <div id="mp3Player"></div>
+  <script>
+    window.onload = function() {
+      const mp3Player = document.getElementById('mp3Player');
+      
+      fetch('/mp3_list')
+        .then(response => response.json())
+        .then(data => {
+          const groupedByArtist = data.reduce((groups, song) => {
+            const artist = song.artist || 'Unknown Artist';
+            if (!groups[artist]) {
+              groups[artist] = [];
+            }
+            groups[artist].push(song);
+            return groups;
+          }, {});
+
+          for (const artist in groupedByArtist) {
+            const artistHeading = document.createElement('h2');
+            artistHeading.textContent = artist;
+            mp3Player.appendChild(artistHeading);
+
+            const songContainer = document.createElement('div');
+            songContainer.className = 'song-container';
+
+            groupedByArtist[artist].forEach((song, index) => {
+              const songBlock = document.createElement('div');
+              songBlock.className = 'song-block';
+
+              const audio = document.createElement('audio');
+              audio.controls = true;
+              audio.src = 'static/mp3/' + song.file;
+
+              const songDetails = document.createElement('p');
+              songDetails.className = 'song-details';
+              songDetails.textContent = `${song.title} - ${song.album} - ${song.duration}`;
+
+              // Add event listener to capture when the song is played
+              audio.addEventListener('play', () => {
+                // Make a request to Flask server to get similar tracks
+                fetch(`/similar_tracks/${index}`)
+                  .then(response => response.json())
+                  .then(similarTracks => console.log(similarTracks))
+                  .catch(error => console.error('Error fetching similar tracks:', error));
+              });
+
+              songBlock.appendChild(audio);
+              songBlock.appendChild(songDetails);
+              songContainer.appendChild(songBlock);
+            });
+
+            mp3Player.appendChild(songContainer);
+          }
+        })
+        .catch(error => console.error('Error fetching MP3 files:', error));
+    };
+  </script>
+</body>
+</html>
+
