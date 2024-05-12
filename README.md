@@ -4,7 +4,7 @@ Spotify is a digital music streaming service offering millions of songs, podcast
 ## Extract, Transform, Load (ETL) 
 
 ### Audio compression:
-- As the dataset was too karge so we had to use audio compression to reduce its size and make it managable.
+- As the dataset was too large so we had to use audio compression to reduce its size and make it managable.
 - in the code we used FFmpeg to compress audio files in a specified folder while retaining metadata. It iterates through each MP3 file, applies compression with a target bitrate (default: 64 kbps), and replaces the original file with the compressed one.
 -  The script provides a simple and efficient way to reduce file sizes while preserving audio quality ad its metadata.
   
